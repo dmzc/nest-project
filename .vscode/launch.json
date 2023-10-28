@@ -13,7 +13,16 @@
       "type": "node",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}/nest"
-       
+    },
+    {
+      "name": "static server",
+      "request": "launch",
+      "runtimeExecutable": "npx",
+      "args": ["http-server","-p 80"],
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/static-server"
     }
   ]
 }

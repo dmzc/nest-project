@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://unpkg.com/axios@0.24.0/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div style="display: flex; flex-direction: column">
+      <div style="display: flex; flex-direction: column; margin-bottom: 10px">
+        <h1>单个文件单个文件字段提交</h1>
+        <input id="fileInput1" type="file" multiple />
+        <button style="width: 80px; margin-top: 10px" onclick="singleFile()">
+          提交
+        </button>
+      </div>
+      <div style="display: flex; flex-direction: column; margin-bottom: 10px">
+        <h1>多个文件单个文件字段提交</h1>
+        <input id="fileInput2" type="file" multiple />
+        <button style="width: 80px; margin-top: 10px" onclick="arrayFile()">
+          提交
+        </button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; margin-bottom: 10px">
+        <h1>多个文件多个文件字段提交</h1>
+        <input id="fileInput3" type="file" multiple />
+        <button style="width: 80px; margin-top: 10px" onclick="multiFile()">
+          提交
+        </button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; margin-bottom: 10px">
+        <h1>多个文件任意文件字段提交</h1>
+        <input id="fileInput4" type="file" multiple />
+        <button style="width: 80px; margin-top: 10px" onclick="anyFile()">
+          提交
+        </button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; margin-bottom: 10px">
+        <h1>自定义存储</h1>
+        <input id="fileInput5" type="file" multiple />
+        <button style="width: 80px; margin-top: 10px" onclick="customStorage()">
+          提交
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const fileInput1 = document.querySelector("#fileInput1");
+      const fileInput2 = document.querySelector("#fileInput2");
+      const fileInput3 = document.querySelector("#fileInput3");
+      const fileInput4 = document.querySelector("#fileInput4");
+      const fileInput5 = document.querySelector("#fileInput5");
+      async function singleFile() {
+        const data = new FormData();
+        data.set("name", "guang");
+        data.set("age", 20);
+        data.set("field1", fileInput1.files[0]);
+
+        const res = await axios.post(
+          "http://localhost:3000/upload/singleFile",
+          data
+        );
+        alert(JSON.stringify(res));
+      }
+
+      async function arrayFile() {
+        const data = new FormData();
+        data.set("name", "guang");
+        data.set("age", 20);
+        [...fileInput2.files].forEach((item) => {
+          data.append("field1", item);
+        });
+
+        const res = await axios.post(
+          "http://localhost:3000/upload/arrayFile",
+          data
+        );
+        alert(JSON.stringify(res));
+      }
+
+      async function multiFile() {
+        const data = new FormData();
+        data.set("name", "guang");
+        data.set("age", 20);
+        data.set("field1", fileInput3.files[0]);
+        data.set("field2", fileInput3.files[1]);
+        const res = await axios.post(
+          "http://localhost:3000/upload/multiFile",
+          data
+        );
+        alert(JSON.stringify(res));
+      }
+
+      async function anyFile() {
+        const data = new FormData();
+        data.set("name", "guang");
+        data.set("age", 20);
+        data.set("field1", fileInput4.files[0]);
+        data.set("field2", fileInput4.files[1]);
+        const res = await axios.post(
+          "http://localhost:3000/upload/anyFile",
+          data
+        );
+        alert(JSON.stringify(res));
+      }
+
+      async function customStorage() {
+        const data = new FormData();
+        data.set("name", "guang");
+        data.set("age", 20);
+        data.set("field1", fileInput5.files[0]);
+        data.set("field2", fileInput5.files[1]);
+        const res = await axios.post(
+          "http://localhost:3000/upload/customStorage",
+          data
+        );
+        alert(JSON.stringify(res));
+      }
+    </script>
+  </body>
+</html>
