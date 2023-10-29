@@ -20,5 +20,7 @@ WORKDIR /nest-server
 RUN npm config set registry http://registry.npmmirror.com/
 RUN npm install --production
 
+RUN npm install pm2 -g
+
 EXPOSE 3000
-CMD node /nest-server/main.js
+CMD pm2-runtime /nest-server/main.js
