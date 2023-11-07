@@ -35,7 +35,7 @@ export class AppController {
   private readonly appService: AppService;
 
   @Get()
-  getHello(): string {
+  async getHello() {
     return this.appService.getHello();
   }
 }

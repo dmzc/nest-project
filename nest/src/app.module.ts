@@ -6,6 +6,7 @@ import { UploadModule } from './upload/upload.module';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
+import { createClient } from 'redis';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { User } from './user/entities/user.entity';
       username: 'root',
       password: 'zcm199',
       database: 'test',
-      synchronize: true,
+      synchronize: false,
       logging: true,
       entities: [User],
       migrations: [],
@@ -78,6 +79,19 @@ import { User } from './user/entities/user.entity';
     {
       provide: 'person4',
       useExisting: 'person2',
+    },
+    {
+      provide: 'REDIS_CLIENT',
+      async useFactory() {
+        const client = createClient({
+          socket: {
+            host: 'localhost',
+            port: 6379,
+          },
+        });
+        await client.connect();
+        return client;
+      },
     },
   ],
 })
