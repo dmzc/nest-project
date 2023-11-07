@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
 import { createClient } from 'redis';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -28,6 +29,12 @@ import { createClient } from 'redis';
       connectorPackage: 'mysql2',
       extra: {
         authPlugin: 'sha256_password',
+      },
+    }),
+    JwtModule.register({
+      secret: 'zhang123',
+      signOptions: {
+        expiresIn: '7d',
       },
     }),
   ],

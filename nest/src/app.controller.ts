@@ -1,5 +1,15 @@
-import { Controller, Get, Inject, Session } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Inject,
+  Res,
+  Session,
+  Headers,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AppService } from './app.service';
+import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
 
 @Controller()
 export class AppController {
@@ -33,10 +43,40 @@ export class AppController {
   private readonly person4: any;
   @Inject(AppService)
   private readonly appService: AppService;
+  @Inject(JwtService)
+  private jwtService: JwtService;
 
   @Get()
-  async getHello(@Session() session) {
+  async getHello(
+    @Session() session,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const newToken = this.jwtService.sign({ count: 1 });
+    response.setHeader('token', newToken);
     session.count = session.count ? session.count + 1 : 1;
     return this.appService.getHello();
+  }
+  @Get('validate')
+  validate(
+    @Headers('auth') auth: string,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    if (auth) {
+      try {
+        const data = this.jwtService.verify(auth);
+        const newToken = this.jwtService.sign({ count: data.count + 1 });
+        response.setHeader('token', newToken);
+
+        return data.count + 1;
+      } catch (e) {
+        console.log(e);
+        throw new UnauthorizedException();
+      }
+    } else {
+      const newToken = this.jwtService.sign({
+        count: 1,
+      });
+      response.setHeader('token', newToken);
+    }
   }
 }
