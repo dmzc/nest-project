@@ -32,6 +32,7 @@ import { JwtModule } from '@nestjs/jwt';
       },
     }),
     JwtModule.register({
+      global: true,
       secret: 'zhang123',
       signOptions: {
         expiresIn: '7d',

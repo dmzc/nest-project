@@ -1,35 +1,54 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { EntityManager } from 'typeorm';
-import { InjectEntityManager } from '@nestjs/typeorm';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
+import { UserDto } from './dto/user.dto';
+import * as crypto from 'crypto';
+
+function md5(str) {
+  const hash = crypto.createHash('md5');
+  hash.update(str);
+  return hash.digest('hex');
+}
 
 @Injectable()
 export class UserService {
-  @InjectEntityManager()
-  private entityManager: EntityManager;
+  @InjectRepository(User)
+  private userRepository: Repository<User>;
 
-  create(createUserDto: CreateUserDto) {
-    this.entityManager.save(User, createUserDto);
-  }
+  private logger = new Logger();
 
-  findAll() {
-    return this.entityManager.find(User);
-  }
-
-  findOne(id: number) {
-    return this.entityManager.findOne(User, { where: { id } });
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    this.entityManager.save(User, {
-      id: id,
-      ...updateUserDto,
+  async register(user: UserDto) {
+    const userRepository = this.userRepository;
+    const foundUser = await userRepository.findOneBy({
+      username: user.username,
     });
+
+    if (foundUser != null) {
+      throw new HttpException('用户已存在', 200);
+    }
+    const nUser = new User();
+    nUser.username = user.username;
+    nUser.password = md5(user.password);
+
+    try {
+      await userRepository.save(nUser);
+      return '注册成功';
+    } catch (e) {
+      this.logger.error(e, UserService);
+    }
   }
 
-  remove(id: number) {
-    this.entityManager.delete(User, id);
+  async login(user: UserDto) {
+    const foundUser = await this.userRepository.findOneBy({
+      username: user.username,
+    });
+    if (!foundUser) {
+      throw new HttpException('用户名不存在', 200);
+    }
+    if (foundUser.password !== md5(user.password)) {
+      throw new HttpException('密码错误', 200);
+    }
+    return foundUser;
   }
 }
