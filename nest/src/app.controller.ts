@@ -6,11 +6,13 @@ import {
   Session,
   Headers,
   UnauthorizedException,
+  HttpStatus,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
@@ -50,6 +52,12 @@ export class AppController {
   @Inject(ConfigService)
   private configService: ConfigService;
 
+  @ApiOperation({ summary: '测试接口1', description: 'aaa描述' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'aaa 成功',
+    type: String,
+  })
   @Get()
   async getHello(
     @Headers() headers,
@@ -59,7 +67,7 @@ export class AppController {
     const newToken = this.jwtService.sign({ count: 1 });
     response.setHeader('token', newToken);
     session.count = session.count ? session.count + 1 : 1;
-    console.log(this.configService.get("aaa"));
+    console.log(this.configService.get('aaa'));
     console.log(headers);
     return this.appService.getHello();
   }
