@@ -5,7 +5,17 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "nest debug",
+      "name": "nest debug(master)",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "args": ["run", "start:dev"],
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/nest"
+    },
+    {
+      "name": "nest debug(slave)",
       "request": "launch",
       "runtimeExecutable": "npm",
       "args": ["run", "start:dev"],

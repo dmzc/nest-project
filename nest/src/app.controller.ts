@@ -52,6 +52,7 @@ export class AppController {
 
   @Get()
   async getHello(
+    @Headers() headers,
     @Session() session,
     @Res({ passthrough: true }) response: Response,
   ) {
@@ -59,6 +60,7 @@ export class AppController {
     response.setHeader('token', newToken);
     session.count = session.count ? session.count + 1 : 1;
     console.log(this.configService.get("aaa"));
+    console.log(headers);
     return this.appService.getHello();
   }
   @Get('validate')

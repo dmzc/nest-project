@@ -7,6 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: true,
   });
+  app.setGlobalPrefix('/api');
   //启用session
   app.use(
     session({
@@ -16,6 +17,6 @@ async function bootstrap() {
     }),
   );
   app.useStaticAssets('public', { prefix: '/static' });
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();
