@@ -8,6 +8,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
 import { createClient } from 'redis';
 import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule } from '@nestjs/config';
+import  config from './config/config.js';
 
 @Module({
   imports: [
@@ -37,6 +39,9 @@ import { JwtModule } from '@nestjs/jwt';
       signOptions: {
         expiresIn: '7d',
       },
+    }),
+    ConfigModule.forRoot({
+      load: [config],
     }),
   ],
   controllers: [AppController],

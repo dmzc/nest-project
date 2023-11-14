@@ -10,6 +10,7 @@ import {
 import { AppService } from './app.service';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
+import { ConfigService } from '@nestjs/config';
 
 @Controller()
 export class AppController {
@@ -46,6 +47,9 @@ export class AppController {
   @Inject(JwtService)
   private jwtService: JwtService;
 
+  @Inject(ConfigService)
+  private configService: ConfigService;
+
   @Get()
   async getHello(
     @Session() session,
@@ -54,6 +58,7 @@ export class AppController {
     const newToken = this.jwtService.sign({ count: 1 });
     response.setHeader('token', newToken);
     session.count = session.count ? session.count + 1 : 1;
+    console.log(this.configService.get("aaa"));
     return this.appService.getHello();
   }
   @Get('validate')
